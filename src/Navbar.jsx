@@ -1,10 +1,21 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import logo from "./logo.svg";
 import { links, social } from "./data";
 
 const Navbar = () => {
   const [isNav, setIsNav] = useState(false);
+  const linksContainerRef = useRef(null);
+  const linksRef = useRef(null);
+
+  useEffect(() => {
+    const linksHeight = linksRef.current.getBoundingClientRect().height;
+    if (isNav) {
+      linksContainerRef.current.style.height = `${linksHeight}px`;
+    } else {
+      linksContainerRef.current.style.height = "0px";
+    }
+  }, [isNav]);
 
   return (
     <nav>
@@ -15,10 +26,10 @@ const Navbar = () => {
             <FaBars />
           </button>
         </div>
-        <div className={`links-container ${isNav && "show-container"}`}>
-          <ul className="links">
-            {links.map((route) => {
-              const { id, url, text } = route;
+        <div className="links-container" ref={linksContainerRef}>
+          <ul className="links" ref={linksRef}>
+            {links.map((link) => {
+              const { id, url, text } = link;
               return (
                 <li key={id}>
                   <a href={url}>{text}</a>
@@ -28,8 +39,8 @@ const Navbar = () => {
           </ul>
         </div>
         <ul className="social-icons">
-          {social.map((route) => {
-            const { id, url, icon } = route;
+          {social.map((socialIcon) => {
+            const { id, url, icon } = socialIcon;
             return (
               <li key={id}>
                 <a href={url}>{icon}</a>
